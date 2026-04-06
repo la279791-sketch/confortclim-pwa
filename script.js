@@ -1,125 +1,227 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ===== CHECKLIST POR TIPO ===== */
-  const checklistData = {
-    instalacao: [
-      "Verificar local de instalação",
-      "Confirmar capacidade do equipamento",
-      "Checar tensão elétrica",
-      "Instalar unidade interna",
-      "Instalar unidade externa",
-      "Executar vácuo",
-      "Testar funcionamento"
-    ],
-    preventiva: [
-      "Limpar filtros",
-      "Limpar serpentina",
-      "Verificar pressão",
-      "Checar dreno",
-      "Orientar cliente"
-    ],
-    corretiva: [
-      "Identificar defeito",
-      "Substituir peça",
-      "Testar equipamento"
-    ],
-    outros: [
-      "Avaliação técnica",
-      "Visita",
-      "Orçamento",
-      "Serviço personalizado"
-    ]
-  };
+/* ===============================
+ CHECKLIST POR TIPO DE SERVIÇO
+ =============================== */
+ const checklistData = {
+ "Instalação": [
+ "Verificar local de instalação",
+ "Confirmar capacidade do equipamento",
+ "Checar tensão elétrica",
+ "Instalar unidade interna",
+ "Instalar unidade externa",
+ "Executar vácuo",
+ "Testar funcionamento"
+ ],
+ "Manutenção Preventiva": [
+ "Limpar filtros",
+ "Limpar serpentina",
+ "Verificar pressão",
+ "Checar dreno",
+ "Orientar cliente"
+ ],
+ "Manutenção Corretiva": [
+ "Identificar defeito",
+ "Substituir peça",
+ "Testar equipamento"
+ ],
+ "Outros": [
+ "Avaliação técnica",
+ "Visita",
+ "Orçamento",
+ "Serviço personalizado"
+ ]
+ };
 
-  const tipoServico = document.getElementById("tipoServico");
-  const checklist = document.getElementById("checklist");
+ const tipoServico = document.getElementById("tipoServico");
+ const checklist = document.getElementById("checklist");
 
-  tipoServico.addEventListener("change", () => {
-    checklist.innerHTML = "";
-    (checklistData[tipoServico.value] || []).forEach(texto => {
-      const div = document.createElement("div");
-      div.className = "check-item";
-      div.innerHTML = `<input type="checkbox"><span>${texto}</span>`;
-      checklist.appendChild(div);
-    });
-  });
+ checklist.style.display = "none";
 
-  /* ===== ASSINATURA ===== */
-  function habilitarAssinatura(id) {
-    const canvas = document.getElementById(id);
-    const ctx = canvas.getContext("2d");
-    let desenhando = false;
+ tipoServico.addEventListener("change", () => {
+ checklist.innerHTML = "";
 
-    canvas.onmousedown = () => desenhando = true;
-    canvas.onmouseup = () => {
-      desenhando = false;
-      ctx.beginPath();
-    };
-    canvas.onmousemove = e => {
-      if (!desenhando) return;
-      ctx.lineWidth = 2;
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
-    };
-  }
+ const itens = checklistData[tipoServico.value];
+ if (!itens) {
+ checklist.style.display = "none";
+ return;
+ }
 
-  habilitarAssinatura("assinaturaCliente");
-  habilitarAssinatura("assinaturaTecnico");
+ checklist.style.display = "flex";
 
+ itens.forEach(texto => {
+ const item = document.createElement("label");
+ item.className = "check-item";
+ item.innerHTML = `
+ <input type="checkbox">
+ <span>${texto}</span>
+ `;
+ checklist.appendChild(item);
+ });
+ });
+
+/* ===============================
+ ASSINATURA (CLIENTE / TÉCNICO)
+ =============================== */
+ function habilitarAssinatura(id) {
+ const canvas = document.getElementById(id);
+ const ctx = canvas.getContext("2d");
+
+ canvas.width = canvas.offsetWidth;
+ canvas.height = canvas.offsetHeight;
+
+ ctx.lineWidth = 2;
+ ctx.lineCap = "round";
+
+ let desenhando = false;
+
+ const posicao = (e) => {
+ const rect = canvas.getBoundingClientRect();
+ const point = e.touches ? e.touches[0] : e;
+ return {
+ x: point.clientX - rect.left,
+ y: point.clientY - rect.top
+ };
+ };
+
+ const iniciar = (e) => {
+ e.preventDefault();
+ desenhando = true;
+ const p = posicao(e);
+ ctx.beginPath();
+ ctx.moveTo(p.x, p.y);
+ };
+
+ const mover = (e) => {
+ if (!desenhando) return;
+ e.preventDefault();
+ const p = posicao(e);
+ ctx.lineTo(p.x, p.y);
+ ctx.stroke();
+ };
+
+ const parar = () => desenhando = false;
+
+ canvas.addEventListener("mousedown", iniciar);
+ canvas.addEventListener("mousemove", mover);
+ canvas.addEventListener("mouseup", parar);
+ canvas.addEventListener("mouseleave", parar);
+
+ canvas.addEventListener("touchstart", iniciar);
+ canvas.addEventListener("touchmove", mover);
+ canvas.addEventListener("touchend", parar);
+ }
+
+ habilitarAssinatura("assinaturaCliente");
+ habilitarAssinatura("assinaturaTecnico");
 });
 
-/* ===== LIMPAR ASSINATURA ===== */
+/* ===============================
+ LIMPAR ASSINATURA
+ =============================== */
 function limparCanvas(id) {
-  const c = document.getElementById(id);
-  c.getContext("2d").clearRect(0, 0, c.width, c.height);
+ const canvas = document.getElementById(id);
+ canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 }
 
-/* ===== GERAR PDF (PROFISSIONAL) ===== */
-document.getElementById("osForm").addEventListener("submit", function(e) {
-  e.preventDefault();
+/* ===============================
+ GERAR PDF PROFISSIONAL
+ =============================== */
+document.getElementById("osForm").addEventListener("submit", function (e) {
+ e.preventDefault();
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF();
 
-  let y = 20;
+ let y = 20;
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("CONFORTCLIM - CLIMATIZAÇÃO", 105, y, { align: "center" });
+/* ===== CABEÇALHO ===== */
+ doc.setFillColor(10, 78, 138);
+ doc.rect(0, 0, 210, 28, "F");
 
-  y += 8;
-  doc.setFontSize(12);
-  doc.text("ORDEM DE SERVIÇO", 105, y, { align: "center" });
+ doc.setTextColor(255, 255, 255);
+ doc.setFont("helvetica", "bold");
+ doc.setFontSize(16);
+ doc.text("CONFORTCLIM - ORDEM DE SERVIÇO", 105, 18, { align: "center" });
 
-  y += 10;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+ doc.setTextColor(0);
+ y = 40;
 
-  function campo(label, valor) {
-    doc.text(label, 14, y);
-    doc.text(valor || "-", 70, y);
-    y += 6;
-  }
+ doc.setFontSize(10);
 
-  campo("Cliente:", clienteNome.value);
-  campo("Telefone:", clienteTelefone.value);
-  campo("Endereço:", clienteEndereco.value);
+ const campo = (label, valor) => {
+ doc.setFont(undefined, "bold");
+ doc.text(label, 14, y);
+ doc.setFont(undefined, "normal");
+ doc.text(valor || "-", 70, y);
+ y += 7;
+ };
 
-  y += 4;
-  campo("Serviço:", tipoServico.options[tipoServico.selectedIndex].text);
+/* ===== DADOS ===== */
+ campo("Cliente:", clienteNome.value);
+ campo("Telefone:", clienteTelefone.value);
+ campo("Endereço:", clienteEndereco.value);
 
-  y += 4;
-  campo("Equipamento:", `${marca.value} / ${modelo.value} / ${capacidade.value} BTUs`);
+ y += 2;
+ campo("Serviço:", tipoServico.value);
+ campo("Data do Serviço:", formatarData(dataServico.value));
+ campo("Validade:", formatarData(validadeServico.value));
 
-  y += 6;
-  doc.text("Checklist:", 14, y);
-  y += 6;
+ y += 2;
+ campo(
+ "Equipamento:",
+ `${marca.value} / ${modelo.value} / ${capacidade.value} BTUs`
+ );
 
-  document.querySelectorAll("#checklist .check-item").forEach((i, idx) => {
-    const ok = i.querySelector("input").checked ? "✔" : "✖";
-    doc.text(`${idx+1}. [${ok}] ${i.innerText}`, 18, y);
-    y += 5;
-  });
+/* ===== CHECKLIST ===== */
+ y += 6;
+ doc.setFont(undefined, "bold");
+ doc.text("Checklist do Serviço", 14, y);
+ y += 6;
 
-  doc.save("OS_ConfortClim.pdf");
+ doc.setFont(undefined, "normal");
+ document.querySelectorAll("#checklist .check-item").forEach((item, index) => {
+ const marcado = item.querySelector("input").checked ? "✔" : "✘";
+ doc.text(
+ `${index + 1}. [${marcado}] ${item.innerText}`,
+ 18,
+ y
+ );
+ y += 6;
+ });
+
+/* ===== ASSINATURAS ===== */
+ y += 12;
+ doc.setFont(undefined, "bold");
+ doc.text("Assinatura do Cliente", 30, y);
+ doc.text("Assinatura do Técnico", 130, y);
+
+ y += 4;
+ doc.addImage(
+ assinaturaCliente.toDataURL("image/png"),
+ "PNG",
+ 14,
+ y,
+ 70,
+ 26
+ );
+ doc.addImage(
+ assinaturaTecnico.toDataURL("image/png"),
+ "PNG",
+ 120,
+ y,
+ 70,
+ 26
+ );
+
+ doc.save("OS_ConfortClim.pdf");
 });
+
+/* ===============================
+ FORMATA DATA (DD/MM/AAAA)
+ =============================== */
+function formatarData(data) {
+ if (!data) return "-";
+ const [ano, mes, dia] = data.split("-");
+ return `${dia}/${mes}/${ano}`;
+}
