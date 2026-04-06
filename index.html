@@ -1,102 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Ordem de Serviço - ConfortClim</title>
+ <meta charset="UTF-8">
+ <title>Ordem de Serviço - ConfortClim</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0A4E8A">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#0A4E8A">
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- CSS DO APP -->
-  <link rel="stylesheet" href="style.css">
+ <link rel="manifest" href="manifest.json">
+ <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header>
-  <h1>Ordem de Serviço</h1>
+ <h1>Ordem de Serviço</h1>
 </header>
 
 <main>
 <form id="osForm">
 
-  <section>
-    <h2>Cliente</h2>
-    <input type="text" id="clienteNome" placeholder="Nome do cliente" required>
-    <input type="tel" id="clienteTelefone" placeholder="Telefone">
-    <input type="text" id="clienteEndereco" placeholder="Endereço">
-  </section>
+<section>
+ <h2>Cliente</h2>
+ <input id="clienteNome" placeholder="Nome do cliente" required>
+ <input id="clienteTelefone" placeholder="Telefone">
+ <input id="clienteEndereco" placeholder="Endereço">
+</section>
 
-  <section>
-    <h2>Serviço</h2>
-    <input type="date" id="dataServico">
-    <input type="time" id="horaServico">
+<section>
+ <h2>Serviço</h2>
+ <input type="date" id="dataServico">
+ <input type="time" id="horaServico">
+ <input type="date" id="validadeServico">
+ <select id="tipoServico" required>
+ <option value="">Tipo de serviço</option>
+ <option value="Instalação">Instalação</option>
+ <option value="Manutenção Preventiva">Manutenção Preventiva</option>
+ <option value="Manutenção Corretiva">Manutenção Corretiva</option>
+ <option value="Outros">Outros</option>
+ </select>
+</section>
 
-    <select id="tipoServico" required>
-      <option value="">Tipo de serviço</option>
-      <option value="instalacao">Instalação</option>
-      <option value="preventiva">Manutenção Preventiva</option>
-      <option value="corretiva">Manutenção Corretiva</option>
-      <option value="outros">Outros Serviços</option>
-    </select>
-  </section>
+<section>
+ <h2>Equipamento</h2>
+ <input id="marca" placeholder="Marca">
+ <input id="modelo" placeholder="Modelo">
+ <input id="capacidade" placeholder="BTUs">
+</section>
 
-  <section>
-    <h2>Equipamento</h2>
-    <input type="text" id="marca" placeholder="Marca">
-    <input type="text" id="modelo" placeholder="Modelo">
-    <input type="text" id="capacidade" placeholder="Capacidade (BTUs)">
-  </section>
+<section>
+ <h2>Checklist</h2>
+ <div id="checklist" class="checklist-safe"></div>
+</section>
 
-  <section>
-    <h2>Checklist</h2>
-    <div id="checklist" class="checklist-safe"></div>
-  </section>
+<section>
+ <h2>Descrição</h2>
+ <textarea id="descricao"></textarea>
+</section>
 
-  <section>
-    <h2>Descrição do Serviço</h2>
-    <textarea id="descricao" rows="4"></textarea>
-  </section>
+<section>
+ <h2>Materiais</h2>
+ <textarea id="materiais"></textarea>
+</section>
 
-  <section>
-    <h2>Materiais Utilizados</h2>
-    <textarea id="materiais" rows="3"></textarea>
-  </section>
+<section>
+ <h2>Valores</h2>
+ <input id="valor" placeholder="Valor R$">
+ <input id="pagamento" placeholder="Forma de pagamento">
+</section>
 
-  <section>
-    <h2>Valores</h2>
-    <input type="text" id="valor" placeholder="Valor do serviço (R$)">
-    <input type="text" id="pagamento" placeholder="Forma de pagamento">
-  </section>
+<section>
+ <h2>Assinaturas</h2>
+ <label>Cliente</label>
+ <canvas id="assinaturaCliente"></canvas>
+ <button type="button" onclick="limparCanvas('assinaturaCliente')">Limpar</button>
 
-  <section>
-    <h2>Assinaturas</h2>
+ <label>Técnico</label>
+ <canvas id="assinaturaTecnico"></canvas>
+ <button type="button" onclick="limparCanvas('assinaturaTecnico')">Limpar</button>
+</section>
 
-    <label>Cliente</label>
-    <canvas id="assinaturaCliente"></canvas>
-    <button type="button" onclick="limparCanvas('assinaturaCliente')">Limpar</button>
-
-    <label>Técnico</label>
-    <canvas id="assinaturaTecnico"></canvas>
-    <button type="button" onclick="limparCanvas('assinaturaTecnico')">Limpar</button>
-  </section>
-
-  <button type="submit">Salvar Ordem de Serviço</button>
+<button type="submit">SALVAR ORDEM DE SERVIÇO</button>
 
 </form>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
 
-<!-- Service Worker -->
 <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('✅ Service Worker registrado'))
-      .catch(err => console.error('❌ Falha no Service Worker', err));
-  }
+if ('serviceWorker' in navigator) {
+ navigator.serviceWorker.register('./sw.js');
+}
 </script>
 
 </body>
