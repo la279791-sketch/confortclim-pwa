@@ -1,0 +1,118 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #eef1f4;
+  margin: 0;
+}
+
+header {
+  background: #0a4e8a;
+  color: #fff;
+  padding: 18px;
+  text-align: center;
+  border-radius: 0 0 18px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+main {
+  max-width: 420px;
+  margin: auto;
+  padding: 14px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: #0a4e8a;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  font-size: 15px;
+}
+/* ===== CHECKLIST PROFISSIONAL ===== */
+
+.checklist-safe {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.check-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #0a4e8a;
+  flex-shrink: 0;
+}
+
+.check-item span {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #222;
+}
+
+canvas {
+  width: 100%;
+  height: 140px;
+  border: 2px dashed #aaa;
+  border-radius: 14px;
+  background: #fafafa;
+  margin-top: 8px;
+}
+
+button {
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  background: #0a4e8a;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="button"] {
+  background: #777;
+  margin-top: 6px;
+}
+
+button[type="submit"] {
+  position: sticky;
+  bottom: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
