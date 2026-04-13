@@ -1,155 +1,333 @@
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* =========================
+   DESIGN SYSTEM (PRO)
+========================= */
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #1e40af;
+  --primary-light: #3b82f6;
+  --text: #0f172a;
+  --text-soft: #475569;
+  --border: #e2e8f0;
+  --success: #16a34a;
+  --radius: 16px;
+
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
 
 body {
- margin: 0;
- background: #eef1f4;
- font-family: system-ui, sans-serif;
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: radial-gradient(circle at top, #eef2ff, var(--bg));
+  color: var(--text);
 }
 
-header {
- height: 58px;
- background: #0a4e8a;
- color: #fff;
- display: flex;
- align-items: center;
- justify-content: center;
- position: sticky;
- top: 0;
- box-shadow: 0 6px 18px rgba(0,0,0,.25);
- z-index: 10;
-}
-
+/* =========================
+   LAYOUT
+========================= */
 main {
- max-width: 420px;
- margin: auto;
- padding: 14px;
+  width: 100%;
+  max-width: 760px;
+  margin: auto;
+  padding: 20px;
 }
 
+/* =========================
+   HEADER EMPRESA (premium)
+========================= */
+.empresa {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  padding: 18px 22px;
+  margin-bottom: 20px;
+
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+/* linha premium lateral */
+.empresa::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 4px;
+  border-radius: 10px;
+  background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+}
+
+.logo {
+  height: 54px;
+}
+
+.empresa-info {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+/* =========================
+   CARDS (SECTIONS)
+========================= */
 section {
- background: #fff;
- border-radius: 16px;
- padding: 16px;
- margin-bottom: 14px;
- box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+
+  transition: 0.25s ease;
 }
 
+section:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* títulos */
 h2 {
- font-size: 13px;
- font-weight: 700;
- color: #0a4e8a;
- text-transform: uppercase;
+  margin-bottom: 14px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
 }
 
+/* =========================
+   INPUTS (estilo SaaS)
+========================= */
 input, select, textarea {
- width: 100%;
- height: 52px;
- margin-top: 8px;
- border-radius: 12px;
- border: 1px solid #ccc;
- padding: 12px;
- font-size: 16px;
+  width: 100%;
+  padding: 14px 15px;
+  margin-top: 8px;
+
+  border-radius: 12px;
+  border: 1px solid var(--border);
+
+  font-size: 15px;
+  background: #f9fafb;
+
+  transition: all 0.2s ease;
 }
 
-textarea { height: 90px; resize: none; }
+input:hover, select:hover, textarea:hover {
+  border-color: #cbd5f5;
+}
 
 input:focus, select:focus, textarea:focus {
- outline: none;
- border-color: #0a4e8a;
- box-shadow: 0 0 0 3px rgba(10,78,138,.15);
+  outline: none;
+  background: #fff;
+  border-color: var(--primary);
+
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
 }
 
-.checklist-safe {
- display: none;
- flex-direction: column;
- gap: 10px;
+/* =========================
+   BOTÃO PRINCIPAL (TOP)
+========================= */
+button[type="submit"] {
+  width: 100%;
+  padding: 16px;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 22px rgba(59,130,246,0.35);
+  transition: all 0.25s ease;
 }
 
-.check-item {
- display: flex;
- gap: 12px;
- padding: 10px;
- background: #f9fafb;
- border-radius: 12px;
- border-left: 6px solid #0a4e8a;
+button[type="submit"]:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 30px rgba(59,130,246,0.4);
 }
 
-canvas {
- width: 100%;
- height: 140px;
- border: 2px dashed #aaa;
- border-radius: 14px;
- margin-top: 8px;
- touch-action: none;
+button[type="submit"]:active {
+  transform: scale(0.98);
 }
 
-button {
- height: 58px;
- border-radius: 18px;
- border: none;
- background: linear-gradient(#0a4e8a, #083d6c);
- color: #fff;
- font-size: 16px;
- font-weight: 600;
- box-shadow: 0 10px 30px rgba(0,0,0,.25);
- cursor: pointer;
-}
-
+/* botão secundário */
 button[type="button"] {
- background: #6b7280;
- height: 40px;
- margin-top: 6px;
-}
-/* ===== CHECKLIST ESTILO APP PROFISSIONAL ===== */
+  margin-top: 10px;
+  padding: 10px 14px;
 
+  border-radius: 10px;
+  border: 1px solid var(--border);
+
+  background: #f1f5f9;
+  color: var(--text-soft);
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button[type="button"]:hover {
+  background: #e2e8f0;
+}
+
+/* =========================
+   CANVAS
+========================= */
+canvas {
+  width: 100%;
+  height: 140px;
+
+  border-radius: 12px;
+  border: 1.5px dashed #cbd5e1;
+
+  background: repeating-linear-gradient(
+    45deg,
+    #f8fafc,
+    #f8fafc 10px,
+    #f1f5f9 10px,
+    #f1f5f9 20px
+  );
+}
+
+/* =========================
+   CHECKLIST (premium UI)
+========================= */
 .checklist-safe {
- display: flex;
- flex-direction: column;
- gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
+/* item */
 .check-item {
- display: flex;
- align-items: center;
- gap: 14px;
- padding: 14px 16px;
- background: #ffffff;
- border-radius: 16px;
- box-shadow: 0 4px 14px rgba(0,0,0,.08);
- border-left: 6px solid #0a4e8a;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 14px 16px;
+  border-radius: 14px;
+
+  background: #f8fafc;
+  border: 1px solid var(--border);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-/* Esconde checkbox padrão */
+.check-item:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+/* checkbox */
 .check-item input[type="checkbox"] {
- appearance: none;
- -webkit-appearance: none;
- width: 34px;
- height: 34px;
- border-radius: 10px;
- background: #e5e7eb;
- position: relative;
- cursor: pointer;
+  appearance: none;
+
+  width: 26px;
+  height: 26px;
+
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-/* Checkbox marcado */
+/* checked */
 .check-item input[type="checkbox"]:checked {
- background: #1976d2;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
-/* Ícone de check ✔ */
+/* animação check */
 .check-item input[type="checkbox"]:checked::after {
- content: "✔";
- color: #fff;
- font-size: 20px;
- font-weight: bold;
- position: absolute;
- top: 3px;
- left: 8px;
+  content: "";
+  position: absolute;
+
+  width: 6px;
+  height: 12px;
+
+  border: solid white;
+  border-width: 0 2px 2px 0;
+
+  transform: rotate(45deg);
+  top: 4px;
+  left: 9px;
 }
 
-/* Texto do checklist */
+/* texto */
 .check-item span {
- font-size: 15px;
- font-weight: 500;
- color: #111827;
- line-height: 1.4;
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+/* efeito quando marcado */
+.check-item input:checked + span {
+  color: var(--success);
+  font-weight: 600;
+}
+/* =========================
+   AJUSTE GLOBAL DE LAYOUT
+========================= */
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* container geral alinhado */
+.container {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* HEADER alinhado com o resto */
+.empresa {
+  width: 100%;
+  max-width: 760px;
+  margin: 20px auto 10px auto;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  padding: 20px;
+}
+
+/* melhora alinhamento interno */
+.empresa-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* logo mais proporcional */
+.logo {
+  height: 50px;
+}
+
+/* remove fundo estranho atrás */
+body {
+  background: linear-gradient(to bottom, #eef2f7, #e6ecf3);
+}
+
+/* garante que o main encaixe bonito */
+main.container {
+  margin-top: 0;
 }
