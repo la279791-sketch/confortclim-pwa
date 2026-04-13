@@ -1,98 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
- <meta charset="UTF-8">
- <title>Ordem de Serviço - ConfortClim</title>
+  <meta charset="UTF-8" />
+  <title>Ordem de Serviço - ConfortClim</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="theme-color" content="#0A4E8A">
+  <!-- Fonte profissional (combina com o CSS premium) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
- <link rel="manifest" href="manifest.json">
- <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<header>
- <h1>Ordem de Serviço</h1>
+<header class="empresa">
+  <div class="logo-container">
+    <img src="./logo.png" alt="Logo ConfortClim" class="logo" />
+  </div>
+
+  <div class="empresa-info">
+    <p><strong>Razão:</strong> 57.589.875 FELIPE DIONIZIO ALVES MUNIZ DE ARAUJO</p>
+    <p><strong>CNPJ:</strong> 57.589.875/0001-98</p>
+    <p><strong>Endereço:</strong> Rua Doutor Mariano Mendes, 19</p>
+    <p>Porto do Centro - Teresina-PI</p>
+    <p><strong>Tel:</strong> (86) 99512-2772</p>
+    <p><strong>Email:</strong> Confortclim.pi@gmail.com</p>
+  </div>
 </header>
 
-<main>
-<form id="osForm">
+<main class="container">
+  <form id="osForm" novalidate>
 
-<section>
- <h2>Cliente</h2>
- <input id="clienteNome" placeholder="Nome do cliente" required>
- <input id="clienteTelefone" placeholder="Telefone">
- <input id="clienteEndereco" placeholder="Endereço">
-</section>
+    <!-- CLIENTE -->
+    <section class="card">
+      <h2>Cliente</h2>
 
-<section>
- <h2>Serviço</h2>
- <input type="date" id="dataServico">
- <input type="time" id="horaServico">
- <input type="date" id="validadeServico">
- <select id="tipoServico" required>
- <option value="">Tipo de serviço</option>
- <option value="Instalação">Instalação</option>
- <option value="Manutenção Preventiva">Manutenção Preventiva</option>
- <option value="Manutenção Corretiva">Manutenção Corretiva</option>
- <option value="Outros">Outros</option>
- </select>
-</section>
+      <div class="form-group">
+        <label for="clienteNome">Nome</label>
+        <input id="clienteNome" required />
+      </div>
 
-<section>
- <h2>Equipamento</h2>
- <input id="marca" placeholder="Marca">
- <input id="modelo" placeholder="Modelo">
- <input id="capacidade" placeholder="BTUs">
-</section>
+      <div class="form-group">
+        <label for="clienteTelefone">Telefone</label>
+        <input id="clienteTelefone" inputmode="tel" />
+      </div>
 
-<section>
- <h2>Checklist</h2>
- <div id="checklist" class="checklist-safe"></div>
-</section>
+      <div class="form-group">
+        <label for="clienteEndereco">Endereço</label>
+        <input id="clienteEndereco" />
+      </div>
+    </section>
 
-<section>
- <h2>Descrição</h2>
- <textarea id="descricao"></textarea>
-</section>
+    <!-- SERVIÇO -->
+    <section class="card">
+      <h2>Serviço</h2>
 
-<section>
- <h2>Materiais</h2>
- <textarea id="materiais"></textarea>
-</section>
+      <div class="form-group">
+        <label for="dataServico">Data do serviço</label>
+        <input type="date" id="dataServico" />
+      </div>
 
-<section>
- <h2>Valores</h2>
- <input id="valor" placeholder="Valor R$">
- <input id="pagamento" placeholder="Forma de pagamento">
-</section>
+      <div class="form-group">
+        <label for="dataValidade">Validade do serviço</label>
+        <input type="date" id="dataValidade" />
+      </div>
 
-<section>
- <h2>Assinaturas</h2>
- <label>Cliente</label>
- <canvas id="assinaturaCliente"></canvas>
- <button type="button" onclick="limparCanvas('assinaturaCliente')">Limpar</button>
+      <div class="form-group">
+        <label for="tipoServico">Tipo de serviço</label>
+        <select id="tipoServico" required>
+          <option value="">Selecione</option>
+          <option value="instalacao">Instalação</option>
+          <option value="preventiva">Manutenção Preventiva</option>
+          <option value="corretiva">Manutenção Corretiva</option>
+        </select>
+      </div>
+    </section>
 
- <label>Técnico</label>
- <canvas id="assinaturaTecnico"></canvas>
- <button type="button" onclick="limparCanvas('assinaturaTecnico')">Limpar</button>
-</section>
+    <!-- CHECKLIST -->
+    <section class="card" id="checklistCard" style="display:none;">
+      <h2>Checklist</h2>
+      <div id="checklist" class="checklist-safe"></div>
+    </section>
 
-<button type="submit">SALVAR ORDEM DE SERVIÇO</button>
+    <!-- DESCRIÇÃO -->
+    <section class="card">
+      <h2>Descrição</h2>
 
-</form>
+      <textarea 
+        id="descricao" 
+        placeholder="Descreva o serviço realizado..."
+      ></textarea>
+    </section>
+
+    <!-- VALORES -->
+    <section class="card">
+      <h2>Valores</h2>
+
+      <div class="form-group">
+        <label for="valor">Valor (R$)</label>
+        <input 
+          type="text" 
+          id="valor" 
+          placeholder="0,00"
+          inputmode="numeric"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="pagamento">Forma de pagamento</label>
+        <select id="pagamento">
+          <option value="">Selecione</option>
+          <option>Crédito</option>
+          <option>Débito</option>
+          <option>Pix</option>
+          <option>Espécie</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ASSINATURAS -->
+    <section class="card">
+      <h2>Assinaturas</h2>
+
+      <div class="assinatura-bloco">
+        <label>Cliente</label>
+        <canvas id="assinaturaCliente"></canvas>
+        <button type="button" onclick="limparCanvas('assinaturaCliente')">Limpar</button>
+      </div>
+
+      <div class="assinatura-bloco">
+        <label>Técnico</label>
+        <canvas id="assinaturaTecnico"></canvas>
+        <button type="button" onclick="limparCanvas('assinaturaTecnico')">Limpar</button>
+      </div>
+    </section>
+
+    <div class="acoes">
+      <button type="submit">Salvar OS</button>
+    </div>
+
+  </form>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
- navigator.serviceWorker.register('./sw.js');
-}
-</script>
-
 </body>
 </html>
