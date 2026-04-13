@@ -1,227 +1,262 @@
-document.addEventListener("DOMContentLoaded", () => {
+// Lista de itens para checklist (exemplo, pode personalizar)
+const checklistItems = [
+  'Verificar estado do equipamento',
+  'Limpeza geral',
+  'Teste de funcionamento',
+  'Revisar conexões elétricas',
+  'Conferir nível de gás',
+  'Testar controle remoto',
+  'Orientar cliente sobre uso',
+];
 
-/* ===============================
- CHECKLIST POR TIPO DE SERVIÇO
- =============================== */
- const checklistData = {
- "Instalação": [
- "Verificar local de instalação",
- "Confirmar capacidade do equipamento",
- "Checar tensão elétrica",
- "Instalar unidade interna",
- "Instalar unidade externa",
- "Executar vácuo",
- "Testar funcionamento"
- ],
- "Manutenção Preventiva": [
- "Limpar filtros",
- "Limpar serpentina",
- "Verificar pressão",
- "Checar dreno",
- "Orientar cliente"
- ],
- "Manutenção Corretiva": [
- "Identificar defeito",
- "Substituir peça",
- "Testar equipamento"
- ],
- "Outros": [
- "Avaliação técnica",
- "Visita",
- "Orçamento",
- "Serviço personalizado"
- ]
- };
+// Função para criar checklist na div #checklist
+function criarChecklist() {
+  const checklistDiv = document.getElementById('checklist');
+  checklistDiv.innerHTML = '';
 
- const tipoServico = document.getElementById("tipoServico");
- const checklist = document.getElementById("checklist");
+  checklistItems.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'check-item';
 
- checklist.style.display = "none";
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `check-${index}`;
 
- tipoServico.addEventListener("change", () => {
- checklist.innerHTML = "";
+    const label = document.createElement('label');
+    label.htmlFor = checkbox.id;
+    label.innerHTML = `<span>${item}</span>`;
+    label.style.cursor = 'pointer';
 
- const itens = checklistData[tipoServico.value];
- if (!itens) {
- checklist.style.display = "none";
- return;
- }
+    div.appendChild(checkbox);
+    div.appendChild(label);
 
- checklist.style.display = "flex";
+    checklistDiv.appendChild(div);
+  });
+}
 
- itens.forEach(texto => {
- const item = document.createElement("label");
- item.className = "check-item";
- item.innerHTML = `
- <input type="checkbox">
- <span>${texto}</span>
- `;
- checklist.appendChild(item);
- });
- });
-
-/* ===============================
- ASSINATURA (CLIENTE / TÉCNICO)
- =============================== */
- function habilitarAssinatura(id) {
- const canvas = document.getElementById(id);
- const ctx = canvas.getContext("2d");
-
- canvas.width = canvas.offsetWidth;
- canvas.height = canvas.offsetHeight;
-
- ctx.lineWidth = 2;
- ctx.lineCap = "round";
-
- let desenhando = false;
-
- const posicao = (e) => {
- const rect = canvas.getBoundingClientRect();
- const point = e.touches ? e.touches[0] : e;
- return {
- x: point.clientX - rect.left,
- y: point.clientY - rect.top
- };
- };
-
- const iniciar = (e) => {
- e.preventDefault();
- desenhando = true;
- const p = posicao(e);
- ctx.beginPath();
- ctx.moveTo(p.x, p.y);
- };
-
- const mover = (e) => {
- if (!desenhando) return;
- e.preventDefault();
- const p = posicao(e);
- ctx.lineTo(p.x, p.y);
- ctx.stroke();
- };
-
- const parar = () => desenhando = false;
-
- canvas.addEventListener("mousedown", iniciar);
- canvas.addEventListener("mousemove", mover);
- canvas.addEventListener("mouseup", parar);
- canvas.addEventListener("mouseleave", parar);
-
- canvas.addEventListener("touchstart", iniciar);
- canvas.addEventListener("touchmove", mover);
- canvas.addEventListener("touchend", parar);
- }
-
- habilitarAssinatura("assinaturaCliente");
- habilitarAssinatura("assinaturaTecnico");
-});
-
-/* ===============================
- LIMPAR ASSINATURA
- =============================== */
+// Função para limpar canvas por id
 function limparCanvas(id) {
- const canvas = document.getElementById(id);
- canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-/* ===============================
- GERAR PDF PROFISSIONAL
- =============================== */
-document.getElementById("osForm").addEventListener("submit", function (e) {
- e.preventDefault();
+// Função para configurar canvas de assinatura
+function configurarCanvas(id) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  let desenhando = false;
+  let lastX, lastY;
 
- const { jsPDF } = window.jspdf;
- const doc = new jsPDF();
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
- let y = 20;
+  canvas.style.width = canvas.offsetWidth + 'px';
+  canvas.style.height = canvas.offsetHeight + 'px';
 
-/* ===== CABEÇALHO ===== */
- doc.setFillColor(10, 78, 138);
- doc.rect(0, 0, 210, 28, "F");
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#0a4e8a';
 
- doc.setTextColor(255, 255, 255);
- doc.setFont("helvetica", "bold");
- doc.setFontSize(16);
- doc.text("CONFORTCLIM - ORDEM DE SERVIÇO", 105, 18, { align: "center" });
+  function iniciar(e) {
+    desenhando = true;
+    const rect = canvas.getBoundingClientRect();
+    lastX = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    lastY = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  }
 
- doc.setTextColor(0);
- y = 40;
+  function desenhar(e) {
+    if (!desenhando) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
 
- doc.setFontSize(10);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    lastX = x;
+    lastY = y;
+  }
 
- const campo = (label, valor) => {
- doc.setFont(undefined, "bold");
- doc.text(label, 14, y);
- doc.setFont(undefined, "normal");
- doc.text(valor || "-", 70, y);
- y += 7;
- };
+  function parar() {
+    desenhando = false;
+  }
 
-/* ===== DADOS ===== */
- campo("Cliente:", clienteNome.value);
- campo("Telefone:", clienteTelefone.value);
- campo("Endereço:", clienteEndereco.value);
+  canvas.addEventListener('mousedown', iniciar);
+  canvas.addEventListener('touchstart', iniciar);
+  canvas.addEventListener('mousemove', desenhar);
+  canvas.addEventListener('touchmove', desenhar);
+  canvas.addEventListener('mouseup', parar);
+  canvas.addEventListener('mouseout', parar);
+  canvas.addEventListener('touchend', parar);
+  canvas.addEventListener('touchcancel', parar);
+}
 
- y += 2;
- campo("Serviço:", tipoServico.value);
- campo("Data do Serviço:", formatarData(dataServico.value));
- campo("Validade:", formatarData(validadeServico.value));
+// INICIALIZAÇÃO CORRETA (CORRIGIDO AQUI)
+window.addEventListener('DOMContentLoaded', () => {
+  configurarCanvas('assinaturaCliente');
+  configurarCanvas('assinaturaTecnico');
 
- y += 2;
- campo(
- "Equipamento:",
- `${marca.value} / ${modelo.value} / ${capacidade.value} BTUs`
- );
+  const tipoServico = document.getElementById('tipoServico');
+  const checklistCard = document.getElementById('checklistCard');
+  const checklistDiv = document.getElementById('checklist');
 
-/* ===== CHECKLIST ===== */
- y += 6;
- doc.setFont(undefined, "bold");
- doc.text("Checklist do Serviço", 14, y);
- y += 6;
+  // ESCONDE CHECKLIST NO INÍCIO (CORREÇÃO PRINCIPAL)
+  checklistCard.style.display = 'none';
 
- doc.setFont(undefined, "normal");
- document.querySelectorAll("#checklist .check-item").forEach((item, index) => {
- const marcado = item.querySelector("input").checked ? "✔" : "✘";
- doc.text(
- `${index + 1}. [${marcado}] ${item.innerText}`,
- 18,
- y
- );
- y += 6;
- });
-
-/* ===== ASSINATURAS ===== */
- y += 12;
- doc.setFont(undefined, "bold");
- doc.text("Assinatura do Cliente", 30, y);
- doc.text("Assinatura do Técnico", 130, y);
-
- y += 4;
- doc.addImage(
- assinaturaCliente.toDataURL("image/png"),
- "PNG",
- 14,
- y,
- 70,
- 26
- );
- doc.addImage(
- assinaturaTecnico.toDataURL("image/png"),
- "PNG",
- 120,
- y,
- 70,
- 26
- );
-
- doc.save("OS_ConfortClim.pdf");
+  tipoServico.addEventListener('change', () => {
+    if (tipoServico.value) {
+      checklistCard.style.display = 'block';
+      criarChecklist();
+    } else {
+      checklistCard.style.display = 'none';
+      checklistDiv.innerHTML = '';
+    }
+  });
 });
 
-/* ===============================
- FORMATA DATA (DD/MM/AAAA)
- =============================== */
-function formatarData(data) {
- if (!data) return "-";
- const [ano, mes, dia] = data.split("-");
- return `${dia}/${mes}/${ano}`;
-}
+// Função para gerar OS e imprimir com bordas e logo.png
+document.getElementById('osForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const clienteNome = document.getElementById('clienteNome').value.trim();
+  const clienteTelefone = document.getElementById('clienteTelefone').value.trim();
+  const clienteEndereco = document.getElementById('clienteEndereco').value.trim();
+  const dataServico = document.getElementById('dataServico').value;
+  const tipoServico = document.getElementById('tipoServico').value;
+  const descricao = document.getElementById('descricao').value.trim();
+  const valor = document.getElementById('valor').value.trim();
+  const pagamento = document.getElementById('pagamento').value.trim();
+
+  if (!clienteNome || !tipoServico) {
+    alert('Por favor, preencha os campos obrigatórios.');
+    return;
+  }
+
+  const checklistDiv = document.getElementById('checklist');
+  const itensMarcados = [];
+
+  checklistDiv.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+    if (cb.checked) itensMarcados.push(checklistItems[i]);
+  });
+
+  const checklistHtml = itensMarcados.length
+    ? `<ul>${itensMarcados.map(item => `<li>${item}</li>`).join('')}</ul>`
+    : '<p><em>Sem itens marcados</em></p>';
+
+  const osHtml = `
+  <div style="width:100%; font-family:Arial;">
+    <style>
+      @page { size: A4 landscape; margin: 20px; }
+      body { margin:0; }
+      table { width:100%; border-collapse: collapse; }
+      td, th { border:1px solid #ccc; padding:8px; font-size:14px; }
+      .sem-borda td { border:none; }
+    </style>
+
+    <table class="sem-borda" style="margin-bottom:10px;">
+      <tr>
+        <td style="width:70%;">
+          <div style="display:flex; align-items:center; gap:15px;">
+            <img src="./logo.png" style="height:60px;">
+            <div>
+              <strong style="font-size:18px;">CONFORTCLIM</strong><br>
+              Climatização & Serviços<br>
+              Tel: (86) 99512-2772<br>
+              Email: Confortclim.pi@gmail.com
+            </div>
+          </div>
+        </td>
+        <td style="text-align:right;">
+          <strong style="font-size:18px;">ORDEM DE SERVIÇO</strong><br>
+          Data: ${dataServico || '-'}<br>
+          Tipo: ${tipoServico}
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <th colspan="4" style="background:#0a4e8a; color:#fff;">DADOS DO CLIENTE</th>
+      </tr>
+      <tr>
+        <td><strong>Nome</strong></td>
+        <td>${clienteNome}</td>
+        <td><strong>Telefone</strong></td>
+        <td>${clienteTelefone || '-'}</td>
+      </tr>
+      <tr>
+        <td><strong>Endereço</strong></td>
+        <td colspan="3">${clienteEndereco || '-'}</td>
+      </tr>
+    </table>
+
+    <table style="margin-top:10px;">
+      <tr>
+        <th colspan="4" style="background:#0a4e8a; color:#fff;">DESCRIÇÃO DO SERVIÇO</th>
+      </tr>
+      <tr>
+        <td colspan="4">${descricao || '<em>Sem descrição</em>'}</td>
+      </tr>
+    </table>
+
+    <table style="margin-top:10px;">
+      <tr>
+        <th style="background:#0a4e8a; color:#fff;">CHECKLIST EXECUTADO</th>
+      </tr>
+      <tr>
+        <td>${checklistHtml}</td>
+      </tr>
+    </table>
+
+    <table style="margin-top:10px;">
+      <tr>
+        <th style="background:#0a4e8a; color:#fff;">VALORES</th>
+        <th style="background:#0a4e8a; color:#fff;">PAGAMENTO</th>
+      </tr>
+      <tr>
+        <td style="font-size:22px; font-weight:bold; color:#0a4e8a;">
+          R$ ${valor || '0,00'}
+        </td>
+        <td>${pagamento || '-'}</td>
+      </tr>
+    </table>
+
+    <table style="margin-top:30px;" class="sem-borda">
+      <tr>
+        <td style="text-align:center;">
+          <div style="border-top:1px solid #000; width:250px; margin:auto;"></div>
+          Cliente
+        </td>
+        <td style="text-align:center;">
+          <div style="border-top:1px solid #000; width:250px; margin:auto;"></div>
+          Técnico
+        </td>
+      </tr>
+    </table>
+
+    <table style="margin-top:20px;">
+      <tr>
+        <td style="font-size:12px;">
+          Garantia de 90 dias conforme o Código de Defesa do Consumidor.<br>
+          Não nos responsabilizamos por serviços realizados por terceiros.
+        </td>
+      </tr>
+    </table>
+  </div>
+`;
+
+  const printWindow = window.open('', '', 'width=900,height=700');
+  printWindow.document.write(`<html><body>${osHtml}</body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+
+  printWindow.onload = () => {
+    printWindow.print();
+    printWindow.close();
+  };
+});
