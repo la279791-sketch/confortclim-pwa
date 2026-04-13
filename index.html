@@ -5,7 +5,7 @@
   <title>Ordem de Serviço - ConfortClim</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Fonte profissional (combina com o CSS premium) -->
+  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
@@ -84,11 +84,7 @@
     <!-- DESCRIÇÃO -->
     <section class="card">
       <h2>Descrição</h2>
-
-      <textarea 
-        id="descricao" 
-        placeholder="Descreva o serviço realizado..."
-      ></textarea>
+      <textarea id="descricao" placeholder="Descreva o serviço realizado..."></textarea>
     </section>
 
     <!-- VALORES -->
@@ -135,13 +131,20 @@
       </div>
     </section>
 
+    <!-- AÇÕES -->
     <div class="acoes">
       <button type="submit">Salvar OS</button>
+      <button type="button" onclick="gerarPDF()">Gerar PDF</button>
     </div>
 
   </form>
 </main>
 
+<!-- BIBLIOTECAS PDF (ESSENCIAL PRA FUNCIONAR NO CELULAR) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script src="script.js"></script>
+
 </body>
 </html>
