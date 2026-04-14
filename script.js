@@ -96,7 +96,7 @@ function configurarCanvas(id) {
   canvas.addEventListener('touchcancel', parar);
 }
 
-// INICIALIZAÇÃO CORRETA (CORRIGIDO AQUI)
+// INICIALIZAÇÃO CORRETA
 window.addEventListener('DOMContentLoaded', () => {
   configurarCanvas('assinaturaCliente');
   configurarCanvas('assinaturaTecnico');
@@ -105,7 +105,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const checklistCard = document.getElementById('checklistCard');
   const checklistDiv = document.getElementById('checklist');
 
-  // ESCONDE CHECKLIST NO INÍCIO (CORREÇÃO PRINCIPAL)
   checklistCard.style.display = 'none';
 
   tipoServico.addEventListener('change', () => {
@@ -118,6 +117,30 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// ===============================
+// 🔥 PDF FUNCIONANDO NO CELULAR
+// ===============================
+async function gerarPDF() {
+  const { jsPDF } = window.jspdf;
+
+  const elemento = document.querySelector("main");
+
+  const canvas = await html2canvas(elemento, {
+    scale: 2,
+    useCORS: true
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const imgWidth = 210;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  pdf.save("ordem-servico.pdf");
+}
 
 // Função para gerar OS e imprimir com bordas e logo.png
 document.getElementById('osForm').addEventListener('submit', function (e) {
